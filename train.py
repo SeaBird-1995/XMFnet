@@ -8,7 +8,7 @@ from model import Network
 from config import params
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from dataloader import ViPCDataLoader
+from dataloader import ViPCDataLoader, collate_fn
 import numpy as np
 import torch.optim as optim
 import torch.nn.functional as F
@@ -124,16 +124,18 @@ optimizer = torch.optim.Adam(filter(
     lambda p: p.requires_grad, model.parameters()), lr=opt.lr, betas=(0.9, 0.999))
 
 ViPCDataset_train = ViPCDataLoader(
-    'train_list2.txt', data_path=opt.dataroot, status="train", category=opt.cat)
+    'dataset/train_list2.txt', data_path=opt.dataroot, status="train", category=opt.cat)
 train_loader = DataLoader(ViPCDataset_train,
+                          collate_fn=collate_fn,
                           batch_size=opt.batch_size,
                           num_workers=opt.nThreads,
                           shuffle=True,
                           drop_last=True)
 
 ViPCDataset_test = ViPCDataLoader(
-    'test_list2.txt', data_path=opt.dataroot, status="test", category=opt.cat)
+    'dataset/test_list2.txt', data_path=opt.dataroot, status="test", category=opt.cat)
 test_loader = DataLoader(ViPCDataset_test,
+                         collate_fn=collate_fn,
                          batch_size=opt.batch_size,
                          num_workers=opt.nThreads,
                          shuffle=True,

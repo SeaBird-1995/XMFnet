@@ -1,0 +1,11 @@
+log/
+runs/
+dataset/train_list2.txt
+dataset/ShapeNetViPC-Dataset
+
+decoder/utils/furthestPointSampling/dist/
+decoder/utils/PyTorchEMD/emd_ext.egg-info/
+decoder/utils/PyTorchEMD/dist/
+decoder/utils/metrics/StructuralLosses/
+build/
+__pycache__/

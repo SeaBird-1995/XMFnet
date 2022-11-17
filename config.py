@@ -38,9 +38,9 @@ class params:
         self.batch_size = 128
         self.nThreads = 1
         self.lr = 0.001
-        self.dataroot = "/datapath"
+        self.dataroot = "./dataset/ShapeNetViPC-Dataset"
         self.n_epochs = 160
-        self.ckp_dir = "./checkpoints_path"
+        self.ckp_dir = "./checkpoints"
         self.ckp_epoch = 5
         self.eval_epoch = 5
         self.resume = ''

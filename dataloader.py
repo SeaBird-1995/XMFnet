@@ -110,6 +110,10 @@ class ViPCDataLoader(Dataset):
        
         pc_path = os.path.join(self.gt_path, ran_key.split(';')[0]+'/'+ ran_key.split(';')[1]+'/'+ran_key.split(';')[-1].replace('\n', '')+'.dat')
         view_path = os.path.join(self.rendering_path,ran_key.split(';')[0]+'/'+ran_key.split(';')[1]+'/rendering/'+ran_key.split(';')[-1].replace('\n','')+'.png')
+
+        if not os.path.exists(pc_path):
+            print(f"[WARNING] {pc_path} is not exist....")
+            return None
         
         #Inserted to correct a bug in the splitting for some lines 
         if(len(ran_key.split(';')[-1])>3):
@@ -135,8 +139,11 @@ class ViPCDataLoader(Dataset):
 
 
         # load the view metadata
-        image_view_id = view_path.split('.')[0].split('/')[-1]
-        part_view_id = pc_part_path.split('.')[0].split('/')[-1]
+        # image_view_id = view_path.split('.')[0].split('/')[-1]
+        # part_view_id = pc_part_path.split('.')[0].split('/')[-1]
+        ## zhm add:
+        image_view_id = os.path.basename(view_path).split('.')[0]
+        part_view_id = os.path.basename(pc_part_path).split('.')[0]
         
         view_metadata = np.loadtxt(view_path[:-6]+'rendering_metadata.txt')
 
