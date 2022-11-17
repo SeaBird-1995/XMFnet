@@ -35,8 +35,8 @@ class params:
         self.num_heads = 4
 
         #Training parameters
-        self.batch_size = 128
-        self.nThreads = 1
+        self.batch_size = 256
+        self.nThreads = 64
         self.lr = 0.001
         self.dataroot = "./dataset/ShapeNetViPC-Dataset"
         self.n_epochs = 160

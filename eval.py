@@ -17,19 +17,20 @@ import open3d as o3d
 
 opt = params()
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-ViPCDataset_test = ViPCDataLoader('test_list.txt', data_path=opt.dataroot, status= "test", category = "car")
+category = "plane"
+ViPCDataset_test = ViPCDataLoader('./dataset/test_list2.txt', data_path=opt.dataroot, status= "test", category=category)
 test_loader = DataLoader(ViPCDataset_test,
                             batch_size=128,
-                            num_workers=opt.nThreads,
+                            num_workers=32,
                             shuffle=True,
                             drop_last=True)
 
 
 
 model = Network().to(device)
-model.load_state_dict(torch.load("./model_path/model.pt")['model_state_dict'])
+model.load_state_dict(torch.load(f"/data/zhanghm/Models/XMFNet/checkpoints_supervised/model_supervised_{category}/best.pt")['model_state_dict'])
 loss_eval = L2_ChamferEval_1000()
 loss_f1 = F1Score()
 
