@@ -2,9 +2,9 @@
 
 dataset:
   dataroot: ./dataset/ShapeNetViPC-Dataset
-  cat: car
+  cat: cabinet
   batch_size: 128
-  nThreads: 32
+  nThreads: 16
 
 trainer:
   default_root_dir: work_dir

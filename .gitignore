@@ -2,6 +2,7 @@ log/
 runs/
 dataset/train_list2.txt
 dataset/ShapeNetViPC-Dataset
+work_dir/
 
 decoder/utils/furthestPointSampling/dist/
 decoder/utils/PyTorchEMD/emd_ext.egg-info/

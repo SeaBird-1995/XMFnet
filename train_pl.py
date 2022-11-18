@@ -54,7 +54,6 @@ def parse_arguments():
 
 config = parse_arguments()
 
-
 ## 1) Define the model
 model = XMFNetPL(config)
 
@@ -77,6 +76,6 @@ val_dataloader = DataLoader(ViPCDataset_test,
                             shuffle=True,
                             drop_last=True)
 
-# trainer = pl.Trainer(devices=1, accelerator="gpu", **config.trainer)
-# trainer.fit(model, train_dataloader, val_dataloader)
+trainer = pl.Trainer(devices=1, accelerator="gpu", **config.trainer)
+trainer.fit(model, train_dataloader, val_dataloader)
 

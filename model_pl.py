@@ -36,9 +36,9 @@ class XMFNetPL(pl.LightningModule):
 
         self.model = Network().apply(weights_init_normal)
         self.loss_cd = L1_ChamferLoss()
+        self.loss_cd_eval = L2_ChamferEval()
 
         self.config = config
-
     
     def forward(self, partial, image):
         partial = farthest_point_sample(partial, 2048)
@@ -52,11 +52,16 @@ class XMFNetPL(pl.LightningModule):
 
         pred_complete = self(partial, image)
         loss_total = self.loss_cd(pred_complete, gt)
-        self.log("train/loss", loss_total, prog_bar=True)
+        self.log("train/loss", loss_total, prog_bar=True, on_epoch=True)
         return loss_total
 
     def validation_step(self, batch, batch_idx):
-        pass
+        image, gt, partial = batch
+        gt = farthest_point_sample(gt, 2048)
+
+        pred_complete = self(partial, image)
+        loss_eval = self.loss_cd_eval(pred_complete, gt)
+        self.log("val/loss", loss_eval, on_epoch=True)
 
     def configure_optimizers(self):
         optim_opt = self.config.optimizer
