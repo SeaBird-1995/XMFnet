@@ -242,13 +242,13 @@ for epoch in range(resume_epoch, resume_epoch + opt.n_epochs+1):
     print('****************************')
 
     if epoch % opt.ckp_epoch == 0:  
-
+        save_path = os.path.join(CKPT_RECORD_FOLDER, f"ckpt_{epoch}.pt")
         torch.save({
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': Loss
-        }, f'./log/{MODEL}/{MODEL}_{VERSION}_{BATCH_SIZE}_{CLASS}_{FLAG}_{TIME_FLAG}/ckpt_{epoch}.pt')
+        }, save_path)
 
 
 print('Train Finished!!')

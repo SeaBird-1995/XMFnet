@@ -6,7 +6,8 @@ class params:
     def __init__(self): 
         
         #General Parameters
-        self.cat = "all"
+        # self.cat = "all"
+        self.cat = "car"
 
         
         #DGCNN parameters
@@ -35,7 +36,7 @@ class params:
         self.num_heads = 4
 
         #Training parameters
-        self.batch_size = 256
+        self.batch_size = 128
         self.nThreads = 64
         self.lr = 0.001
         self.dataroot = "./dataset/ShapeNetViPC-Dataset"
