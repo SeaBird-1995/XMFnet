@@ -1,0 +1,16 @@
+## The official one
+
+dataset:
+  dataroot: ./dataset/ShapeNetViPC-Dataset
+  cat: car
+  batch_size: 128
+  nThreads: 32
+
+trainer:
+  default_root_dir: work_dir
+  max_epochs: 160
+  check_val_every_n_epoch: 5
+  
+
+optimizer:
+  lr: 0.001
