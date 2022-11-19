@@ -52,7 +52,7 @@ class XMFNetPL(pl.LightningModule):
 
         pred_complete = self(partial, image)
         loss_total = self.loss_cd(pred_complete, gt)
-        self.log("train/loss", loss_total, prog_bar=True, on_epoch=True)
+        self.log("train/loss", loss_total, prog_bar=True, on_epoch=True, sync_dist=True)
         return loss_total
 
     def validation_step(self, batch, batch_idx):
@@ -61,7 +61,7 @@ class XMFNetPL(pl.LightningModule):
 
         pred_complete = self(partial, image)
         loss_eval = self.loss_cd_eval(pred_complete, gt)
-        self.log("val/loss", loss_eval, on_epoch=True)
+        self.log("val/loss", loss_eval, on_epoch=True, sync_dist=True)
 
     def configure_optimizers(self):
         optim_opt = self.config.optimizer

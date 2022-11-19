@@ -9,6 +9,7 @@ Description:
 
 import argparse
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint, Callback
 import torch
 from torch.utils.data import DataLoader
 import time
@@ -76,6 +77,17 @@ val_dataloader = DataLoader(ViPCDataset_test,
                             shuffle=True,
                             drop_last=True)
 
-trainer = pl.Trainer(devices=1, accelerator="gpu", **config.trainer)
+callbacks = []
+checkpoint_callback = ModelCheckpoint(
+            monitor="val/loss",
+            mode='min',
+            filename="epoch_{epoch:03d}_val_loss_{val/loss:.5f}",
+            auto_insert_metric_name=False,
+            save_top_k=1,
+            verbose=True,
+        )
+callbacks.append(checkpoint_callback)
+
+trainer = pl.Trainer(devices=4, accelerator="gpu", strategy="ddp", callbacks=callbacks, **config.trainer)
 trainer.fit(model, train_dataloader, val_dataloader)
 
