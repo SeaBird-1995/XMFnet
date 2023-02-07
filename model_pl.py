@@ -36,9 +36,10 @@ class XMFNetPL(pl.LightningModule):
 
         self.model = Network().apply(weights_init_normal)
         self.loss_cd = L1_ChamferLoss()
-        self.loss_cd_eval = L2_ChamferEval()
+        self.loss_cd_eval = L2_ChamferEval_1000()
 
         self.config = config
+        self.save_hyperparameters()
     
     def forward(self, partial, image):
         partial = farthest_point_sample(partial, 2048)
@@ -68,5 +69,7 @@ class XMFNetPL(pl.LightningModule):
         optimizer = torch.optim.Adam(filter(
             lambda p: p.requires_grad, self.model.parameters()), 
             lr=optim_opt.lr, betas=(0.9, 0.999))
-        return optimizer
+        # lr_scheduler = torch.optim.lr_scheduler.StepLR(
+        #                 optimizer, self.lr_step, self.lr_gamma)
+        return [optimizer]
 

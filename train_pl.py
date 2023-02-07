@@ -84,10 +84,11 @@ checkpoint_callback = ModelCheckpoint(
             filename="epoch_{epoch:03d}_val_loss_{val/loss:.5f}",
             auto_insert_metric_name=False,
             save_top_k=1,
+            save_last=True,
             verbose=True,
         )
 callbacks.append(checkpoint_callback)
 
 trainer = pl.Trainer(devices=4, accelerator="gpu", strategy="ddp", callbacks=callbacks, **config.trainer)
-trainer.fit(model, train_dataloader, val_dataloader)
+trainer.fit(model, train_dataloader, val_dataloader, ckpt_path=config.checkpoint)
 

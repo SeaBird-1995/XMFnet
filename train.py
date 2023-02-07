@@ -26,7 +26,7 @@ else:
     CLASS = 'plane'
 
 
-MODEL = 'model_supervised'
+MODEL = 'MyRetrain'
 FLAG = 'train'
 DEVICE = 'cuda:0'
 VERSION = '0.1'
@@ -235,7 +235,7 @@ for epoch in range(resume_epoch, resume_epoch + opt.n_epochs+1):
             if Loss < best_loss:
                 best_loss = Loss
                 best_epoch = epoch
-            print(best_epoch, ' ', best_loss)
+            print("=========Evaluation=========: ", best_epoch, ' ', best_loss)
 
     print('****************************')
     print(best_epoch, ' ', best_loss)

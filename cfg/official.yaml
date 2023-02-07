@@ -2,13 +2,13 @@
 
 dataset:
   dataroot: ./dataset/ShapeNetViPC-Dataset
-  cat: cabinet
+  cat: car #cabinet # plane # watercraft # table, couch, chair, lamp
   batch_size: 128
   nThreads: 16
 
 trainer:
-  default_root_dir: work_dir
-  max_epochs: 160
+  default_root_dir: experiments
+  max_epochs: 360
   check_val_every_n_epoch: 5
   
 
