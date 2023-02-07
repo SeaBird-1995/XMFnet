@@ -74,7 +74,7 @@ val_dataloader = DataLoader(ViPCDataset_test,
                             collate_fn=collate_fn,
                             batch_size=opt.batch_size,
                             num_workers=opt.nThreads,
-                            shuffle=True,
+                            shuffle=False,
                             drop_last=True)
 
 callbacks = []
@@ -89,6 +89,7 @@ checkpoint_callback = ModelCheckpoint(
         )
 callbacks.append(checkpoint_callback)
 
-trainer = pl.Trainer(devices=4, accelerator="gpu", strategy="ddp", callbacks=callbacks, **config.trainer)
+# trainer = pl.Trainer(devices=4, accelerator="gpu", strategy="ddp", callbacks=callbacks, **config.trainer)
+trainer = pl.Trainer(devices=1, accelerator="gpu", callbacks=callbacks, **config.trainer)
 trainer.fit(model, train_dataloader, val_dataloader, ckpt_path=config.checkpoint)
 
