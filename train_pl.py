@@ -9,7 +9,7 @@ Description:
 
 import argparse
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint, Callback
+from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 import torch
 from torch.utils.data import DataLoader
 import time
@@ -36,6 +36,7 @@ def parse_arguments():
     parser.add_argument('--cfg', type=str, default='./cfg/official.yaml', help='the config file path')
     parser.add_argument('--checkpoint', type=str, default=None, help="the pretrained checkpoint path")
     parser.add_argument('--test_mode', action='store_true', help="whether is a test mode")
+    parser.add_argument('--exp_name', type=str, default=None, help="the description about this experiment")
 
     args = parser.parse_args()
     config = OmegaConf.load(args.cfg)
@@ -88,6 +89,9 @@ checkpoint_callback = ModelCheckpoint(
             verbose=True,
         )
 callbacks.append(checkpoint_callback)
+
+lr_monitor = LearningRateMonitor()
+callbacks.append(lr_monitor)
 
 # trainer = pl.Trainer(devices=4, accelerator="gpu", strategy="ddp", callbacks=callbacks, **config.trainer)
 trainer = pl.Trainer(devices=1, accelerator="gpu", callbacks=callbacks, **config.trainer)

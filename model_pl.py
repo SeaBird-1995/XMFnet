@@ -69,7 +69,10 @@ class XMFNetPL(pl.LightningModule):
         optimizer = torch.optim.Adam(filter(
             lambda p: p.requires_grad, self.model.parameters()), 
             lr=optim_opt.lr, betas=(0.9, 0.999))
-        # lr_scheduler = torch.optim.lr_scheduler.StepLR(
-        #                 optimizer, self.lr_step, self.lr_gamma)
-        return [optimizer]
-
+        lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
+                        optimizer, milestones=[25, 120], gamma=self.config.lr_scheduler.gamma)
+        # return [{
+        #         'optimizer': optimizer,
+        #         'lr_scheduler': lr_scheduler
+        #         }]
+        return optimizer

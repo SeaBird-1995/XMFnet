@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 from decoder.dec_net import Decoder_Network
 from encoder_dgcnn.dgcnn import DGCNN
 from encoder_image.resnet import ResNet
+from model import Network
 from config import params
 
 p = params()
@@ -81,6 +82,47 @@ class Network3DOnly(nn.Module):
             
         return final
 
+
+class NetworkDistill(nn.Module):
+    """The model by using distillation technique.
+    """
+
+    def __init__(self):
+
+        super(NetworkDistill, self).__init__()
+
+        ## The 2D&3D fusion branch
+        self.multi_modal_network = Network()
+
+        ## The 3D-only branch
+        self.only3d_network = Network3DOnly()
+
+    def forward(self, x_part, view):
+
+       
+        pc_feat = self.pc_encoder(x_part)  #B x F x N 
+        im_feat = self.im_encoder(view)  #B x F x N
+
+        im_feat = im_feat.permute(0, 2, 1)
+        pc_feat = pc_feat.permute(0, 2, 1)
+
+        x, _ = self.self_attn1(pc_feat, pc_feat, pc_feat)
+        pc_feat = self.layer_norm1(x + pc_feat) # B x N x F
+        
+        x, _ = self.self_attn2(pc_feat, pc_feat, pc_feat)
+        pc_feat = self.layer_norm2(x + pc_feat)
+
+        x, _ = self.self_attn3(pc_feat, pc_feat, pc_feat)
+        pc_feat = self.layer_norm3(x + pc_feat)
+
+
+        x_part = x_part.permute(0, 2, 1)  # B x 3 x N ----> B x N x 3
+        
+
+        final = self.decoder(pc_feat, x_part)
+            
+        return final
+    
 
 if __name__ == '__main__':
 

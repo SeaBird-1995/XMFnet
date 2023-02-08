@@ -2,11 +2,13 @@
 
 dataset:
   dataroot: ./dataset/ShapeNetViPC-Dataset
-  cat: car #cabinet # plane # watercraft # table, couch, chair, lamp
+  cat: watercraft # car #cabinet # plane # watercraft # table, couch, chair, lamp
   batch_size: 128
   nThreads: 16
 
 trainer:
+  devices: '0,' # or '0,1,2,3'
+  strategy: null
   default_root_dir: experiments
   max_epochs: 360
   check_val_every_n_epoch: 5
@@ -14,3 +16,6 @@ trainer:
 
 optimizer:
   lr: 0.001
+
+lr_scheduler:
+  gamma: 0.1
