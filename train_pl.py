@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 import time
 from omegaconf import OmegaConf
 
-from model_pl import XMFNetPL
+from model_pl import XMFNetPL, XMFDistillNetPL
 from dataloader import ViPCDataLoader, collate_fn
 
 
@@ -57,7 +57,8 @@ def parse_arguments():
 config = parse_arguments()
 
 ## 1) Define the model
-model = XMFNetPL(config)
+# model = XMFNetPL(config)
+model = XMFDistillNetPL(config)
 
 ## 2) Define the dataloader
 opt = config.dataset

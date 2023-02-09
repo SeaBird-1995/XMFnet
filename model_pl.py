@@ -98,12 +98,12 @@ class XMFNetPL(LitBaseModel):
         return optimizer
 
 
-class XMFDistllNetPL(LitBaseModel):
+class XMFDistillNetPL(LitBaseModel):
     def __init__(self, config):
         
         super().__init__(config)
         self.save_hyperparameters()
-        
+
         self.model = NetworkDistill().apply(weights_init_normal)
         self.loss_cd = L1_ChamferLoss()
         self.loss_kd = nn.MSELoss()
@@ -145,7 +145,7 @@ class XMFDistllNetPL(LitBaseModel):
 
         ## Forward
         partial = partial.permute(0, 2, 1)
-        student_pred = self.model.test(partial, image)
+        student_pred = self.model.test(partial)
 
         ## Compute metrics
         loss_eval = self.loss_cd_eval(student_pred, gt)

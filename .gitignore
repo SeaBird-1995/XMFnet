@@ -1,5 +1,6 @@
 log/
 runs/
+experiments/
 dataset/train_list2.txt
 dataset/ShapeNetViPC-Dataset
 work_dir/
