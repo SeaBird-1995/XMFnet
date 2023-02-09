@@ -205,6 +205,18 @@ class NetworkDistill(nn.Module):
             
         return student_pred, teacher_pred, feat_student, feat_teacher
     
+    def test(self, x_part):
+        pc_feat = self.pc_encoder(x_part)  #B x F x N
+
+        pc_feat = pc_feat.permute(0, 2, 1)
+
+        inter_feat_s, feat_student = self.encoder_student(pc_feat)
+
+        ## Decoder
+        x_part = x_part.permute(0, 2, 1)  # B x 3 x N ----> B x N x 3
+        student_pred = self.decoder(feat_student, x_part)
+        return student_pred
+    
 
 if __name__ == '__main__':
     # pc_feat = torch.randn(16, 128, 256).cuda()
