@@ -94,6 +94,6 @@ lr_monitor = LearningRateMonitor()
 callbacks.append(lr_monitor)
 
 # trainer = pl.Trainer(devices=4, accelerator="gpu", strategy="ddp", callbacks=callbacks, **config.trainer)
-trainer = pl.Trainer(devices=1, accelerator="gpu", callbacks=callbacks, **config.trainer)
+trainer = pl.Trainer(accelerator="gpu", callbacks=callbacks, **config.trainer)
 trainer.fit(model, train_dataloader, val_dataloader, ckpt_path=config.checkpoint)
 

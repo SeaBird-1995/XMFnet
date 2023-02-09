@@ -7,8 +7,8 @@ dataset:
   nThreads: 16
 
 trainer:
-  devices: '0,' # or '0,1,2,3'
-  strategy: null
+  devices: '1,2,3,4' # or '0,1,2,3'
+  strategy: ddp # null
   default_root_dir: experiments
   max_epochs: 360
   check_val_every_n_epoch: 5
