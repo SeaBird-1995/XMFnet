@@ -51,27 +51,57 @@ class MultiLevelEncoder(nn.Module):
             out = layer(out, out, out)
             outs.append(out.unsqueeze(1))
 
-        outs = torch.cat(outs, 1)
-        return outs
+        encoder_intermediate_feats = torch.cat(outs, 1)
+        return encoder_intermediate_feats, out
+    
+
         
 
 class XModalEncoder(nn.Module):
     def __init__(self, num_layers, embed_dim, num_heads, batch_first=True):
         super().__init__()
-        self.layers = nn.ModuleList([EncoderLayer(embed_dim, num_heads, batch_first)
-                                     for _ in range(num_layers)])
+        
+        self.cross_attn1 = nn.MultiheadAttention(
+            p.d_attn, p.num_heads, batch_first=True)
+        self.layer_norm1 = nn.LayerNorm(p.d_attn)
 
-    def forward(self, input, extra_feat):
-        outs = []
-        out = input
+        self.self_attn1 = nn.MultiheadAttention(
+            p.d_attn, p.num_heads, batch_first=True)
+        self.layer_norm2 = nn.LayerNorm(p.d_attn)
 
-        for i, l in enumerate(self.layers):
-            out = l(out, out, out)
-            out = out + extra_feat[:, i]
-            outs.append(out.unsqueeze(1))
+        self.cross_attn2 = nn.MultiheadAttention(
+            p.d_attn, p.num_heads, batch_first=True)
+        self.layer_norm3 = nn.LayerNorm(p.d_attn)
 
-        outs = torch.cat(outs, 1)
-        return outs
+        self.self_attn2 = nn.MultiheadAttention(
+            p.d_attn, p.num_heads, batch_first=True)
+        self.layer_norm4 = nn.LayerNorm(p.d_attn)
+
+        self.cross_attn3 = nn.MultiheadAttention(
+            p.d_attn, p.num_heads, batch_first=True)
+        self.layer_norm5 = nn.LayerNorm(p.d_attn)
+
+    def forward(self, im_feat, extra_feat):
+        pc_feat = extra_feat[:, -1]
+        
+        x, _ = self.cross_attn1(pc_feat, im_feat, im_feat)
+        pc_feat = self.layer_norm1(x + pc_feat) # B x N x F
+        
+
+        x, _ = self.self_attn1(pc_feat, pc_feat, pc_feat)
+        pc_feat = self.layer_norm2(x + pc_feat)
+        pc_skip = pc_feat
+        
+        x, _ = self.cross_attn2(pc_feat, im_feat, im_feat)
+        pc_feat = self.layer_norm3(x + pc_feat)
+
+        x, _ = self.self_attn2(pc_feat, pc_feat, pc_feat)
+        pc_feat = self.layer_norm4(x + pc_feat)
+
+        x, _ = self.cross_attn3(pc_feat, pc_skip, pc_skip)
+        out = self.layer_norm5(x + pc_feat)
+
+        return out
 
 
 class Network3DOnly(nn.Module):
@@ -162,26 +192,33 @@ class NetworkDistill(nn.Module):
         im_feat = im_feat.permute(0, 2, 1)
         pc_feat = pc_feat.permute(0, 2, 1)
 
-        feat_student = self.encoder_student(pc_feat)
+        inter_feat_s, feat_student = self.encoder_student(pc_feat)
 
-        feat_teacher = self.encoder_teacher(im_feat, pc_feat)
+        feat_teacher = self.encoder_teacher(im_feat, inter_feat_s)
 
         ## Decoder
         x_part = x_part.permute(0, 2, 1)  # B x 3 x N ----> B x N x 3
         
 
-        final = self.decoder(pc_feat, x_part)
+        student_pred = self.decoder(feat_student, x_part)
+        teacher_pred = self.decoder(feat_teacher, x_part)
             
-        return final, feat_student, feat_teacher
+        return student_pred, teacher_pred, feat_student, feat_teacher
     
 
 if __name__ == '__main__':
-    pc_feat = torch.randn(16, 128, 256).cuda()
-    im_feat = torch.randn(16, 196, 256).cuda()
+    # pc_feat = torch.randn(16, 128, 256).cuda()
+    # im_feat = torch.randn(16, 196, 256).cuda()
 
-    encoder = MultiLevelEncoder(3, 256, 4).cuda()
-    output = encoder(pc_feat)
-    print(output.shape)
+    # encoder = MultiLevelEncoder(3, 256, 4).cuda()
+    # output = encoder(pc_feat)
+    # print(output.shape)
+    # exit(0)
+
+    x_part = torch.randn(16, 3, 2048).cuda()
+    view = torch.randn(16, 3, 224, 224).cuda()
+    model = NetworkDistill().cuda()
+    out = model(x_part, view)
     exit(0)
 
    
