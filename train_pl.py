@@ -57,8 +57,8 @@ def parse_arguments():
 config = parse_arguments()
 
 ## 1) Define the model
-# model = XMFNetPL(config)
-model = XMFDistillNetPL(config)
+model = XMFNetPL(config)
+# model = XMFDistillNetPL(config)
 
 ## 2) Define the dataloader
 opt = config.dataset

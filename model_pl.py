@@ -11,7 +11,7 @@ import torch
 import pytorch_lightning as pl
 
 from model import Network
-from model_distillation import NetworkDistill
+from model_distillation import NetworkDistill, Network3DOnly
 from decoder.utils.utils import *
 
 
@@ -55,7 +55,8 @@ class XMFNetPL(LitBaseModel):
 
         super().__init__(config)
 
-        self.model = Network().apply(weights_init_normal)
+        # self.model = Network().apply(weights_init_normal)
+        self.model = Network3DOnly().apply(weights_init_normal)
         self.loss_cd = L1_ChamferLoss()
         self.loss_cd_eval = L2_ChamferEval_1000()
 
@@ -128,7 +129,7 @@ class XMFDistillNetPL(LitBaseModel):
 
         loss_teacher = self.loss_cd(teacher_pred, gt)
         loss_student = self.loss_cd(student_pred, gt)
-        loss_kd = self.loss_kd(feat_student, feat_teacher)
+        loss_kd = 1000.0 * self.loss_kd(feat_student, feat_teacher)
         loss_total = loss_teacher + loss_student + loss_kd
         
         self.log("train/loss", loss_total, prog_bar=True, on_epoch=True, sync_dist=True)

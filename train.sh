@@ -6,4 +6,7 @@ set -x
 
 
 ############### The Model Distillation ###############
-python train_pl.py --cfg cfg/model_distill.yaml --exp_name model_distill
+# python train_pl.py --cfg cfg/model_distill.yaml --exp_name model_distill_high_kd_loss
+
+############### The 3D only model ###############
+python train_pl.py --cfg cfg/model_3d_only.yaml --exp_name model_3d_only

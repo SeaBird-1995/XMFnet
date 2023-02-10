@@ -147,7 +147,7 @@ class Network3DOnly(nn.Module):
         im_feat = im_feat.permute(0, 2, 1)
         pc_feat = pc_feat.permute(0, 2, 1)
 
-        pc_feat = self.encoder(pc_feat)
+        _, pc_feat = self.encoder(pc_feat)
 
         # x, _ = self.self_attn1(pc_feat, pc_feat, pc_feat)
         # pc_feat = self.layer_norm1(x + pc_feat) # B x N x F
