@@ -19,18 +19,19 @@ opt = params()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-category = "plane"
+category = "car"
 ViPCDataset_test = ViPCDataLoader('./dataset/test_list2.txt', data_path=opt.dataroot, status= "test", category=category)
 test_loader = DataLoader(ViPCDataset_test,
                             batch_size=128,
                             num_workers=32,
-                            shuffle=True,
+                            shuffle=False,
                             drop_last=True)
 
 
 
 model = Network().to(device)
-model.load_state_dict(torch.load(f"/data/zhanghm/Models/XMFNet/checkpoints_supervised/model_supervised_{category}/best.pt")['model_state_dict'])
+# model.load_state_dict(torch.load(f"/data/zhanghm/Models/XMFNet/checkpoints_supervised/model_supervised_{category}/best.pt")['model_state_dict'])
+model.load_state_dict(torch.load("log/MyRetrain/MyRetrain_0.1_128_car_train_Mon Feb  6 11:14:03 2023/record/ckpt_155.pt")['model_state_dict'])
 loss_eval = L2_ChamferEval_1000()
 loss_f1 = F1Score()
 

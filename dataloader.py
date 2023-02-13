@@ -172,6 +172,17 @@ class ViPCDataLoader(Dataset):
 
 
 if __name__ == "__main__":
+    import numpy as np
+    ViPCDataset_train = ViPCDataLoader(
+        'dataset/train_list2.txt', data_path="dataset/ShapeNetViPC-Dataset", status="train", category="car")
+    print(len(ViPCDataset_train))
+    views, pc_gt, pc_partial = ViPCDataset_train[0]
+    print(views.shape, pc_gt.shape, pc_partial.shape)
+
+    np.savetxt("pc_gt.xyz", pc_gt.numpy())
+    np.savetxt("pc_partial.xyz", pc_partial.numpy())
+    exit(0)
+
     from torch.utils.data import DataLoader
     category = "table"
     ViPCDataset = ViPCDataLoader('test_list2.txt',data_path='/home/aiello/ShapeNetViPC-Dataset',status='test', category = category)
